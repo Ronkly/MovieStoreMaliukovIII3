@@ -8,6 +8,7 @@ namespace MovieStoreMaliukovIII3
         protected string Director { get; set; }
         protected string Studio { get; set; }
         protected double Price { get; set; }
+        protected int PurchasedCopies { get; set; }
         protected int IMDbRating { get; set; }
         protected int ReleaseYear { get; set; }
 
@@ -17,8 +18,37 @@ namespace MovieStoreMaliukovIII3
             Director = director;
             Studio = studio;
             Price = price;
+            PurchasedCopies = 0;
             ReleaseYear = releaseYear;
             IMDbRating = 0;
+        }
+
+        public string GetTitle()
+        {
+            return Title;
+        }
+
+        public string GetDirector()
+        {
+            return Director;
+        }
+
+        public double GetPrice()
+        {
+            return Price;
+        }
+
+        public void SetPrice(double price)
+        {
+            if (price > 0)
+            {
+                Price = price;
+            }
+            else
+            {
+                Price = 0;
+                Console.WriteLine("The movie is free!");
+            }
         }
 
         public int GetIMDbRating()
@@ -26,29 +56,23 @@ namespace MovieStoreMaliukovIII3
             return IMDbRating;
         }
 
-        public double GetCenu()
-        {
-            return Price;
-        }
-
         public virtual void DisplayData()
         {
             Console.WriteLine("Title: " + Title);
-            Console.WriteLine("Price: " + Price + " dinara");
-            Console.WriteLine("Broj prodatih primeraka: " + IMDbRating + " kom.");
+            Console.WriteLine("Price: " + Price + " dinars");
+            Console.WriteLine("Broj prodatih primeraka: " + PurchasedCopies + " kom.");
             Console.WriteLine("Godina izdanja: " + ReleaseYear + ". godina");
         }
 
         public virtual double GetIncome()
         {
-            return Price * IMDbRating;
+            return Price * PurchasedCopies;
         }
 
         public virtual void SellCopy(MovieRelease[] catalogue, int index)
         {
-            IMDbRating++;
-            Console.WriteLine("MovieRelease: " + Title + " je prodata.");
-            Console.WriteLine("Ukupno prodato:" + IMDbRating + " kom.");
+            PurchasedCopies++;
+            Console.WriteLine("Movie release " + Title + " is sold.");
         }
     }
 
@@ -100,7 +124,7 @@ namespace MovieStoreMaliukovIII3
         {
             if (CopiesAvailable > 0)
             {
-                IMDbRating++;
+                PurchasedCopies++;
                 CopiesAvailable--;
                 Console.WriteLine("Movie release: " + Title + " is sold.");
                 Console.WriteLine("Availability: " + CopiesAvailable + " copies");
@@ -119,18 +143,20 @@ namespace MovieStoreMaliukovIII3
         public override void DisplayData()
         {
             base.DisplayData();
-            Console.WriteLine("Na zalihama: " + CopiesAvailable + " kom");
+            Console.WriteLine("Copies available: " + CopiesAvailable + " kom");
             Console.WriteLine("Discount: " + Discount + "%");
         }
     }
     internal class AnalogMovieRelease : MovieRelease
     {
+        private string Format { get; set; }
         private int CopiesAvailable { get; set; }
         private double Discount { get; set; }
 
-        public AnalogMovieRelease(string title, string director, string studio, double price, int releaseYear, int CopiesAvailable, double Discount)
+        public AnalogMovieRelease(string title, string director, string studio, double price, int releaseYear, string Format, int CopiesAvailable, double Discount)
             : base(title, director, studio, price, releaseYear)
         {
+            this.Format = Format;
             this.CopiesAvailable = CopiesAvailable;
             this.Discount = Discount;
         }
@@ -144,7 +170,7 @@ namespace MovieStoreMaliukovIII3
         {
             if (CopiesAvailable > 0)
             {
-                IMDbRating++;
+                PurchasedCopies++;
                 CopiesAvailable--;
                 Console.WriteLine("Movie release: " + Title + " is sold.");
                 Console.WriteLine("Availability: " + CopiesAvailable + " copies");
@@ -163,7 +189,7 @@ namespace MovieStoreMaliukovIII3
         public override void DisplayData()
         {
             base.DisplayData();
-            Console.WriteLine("Na zalihama: " + CopiesAvailable + " kom");
+            Console.WriteLine("Copies available: " + CopiesAvailable + " kom");
             Console.WriteLine("Discount: " + Discount + "%");
         }
     }
@@ -194,24 +220,26 @@ namespace MovieStoreMaliukovIII3
 
                 switch (izbor)
                 {
-                    case 1: PrikaziSveIgre(catalogue); break;
+                    case 1: DisplayAllMovies(catalogue); break;
                     case 2: SellCopy(catalogue); break;
-                    case 3: NajskupljaMovieRelease(catalogue); break;
-                    case 4: IgreSaDiscountom(catalogue); break;
+                    case 3: MostExpensiveMovieRelease(catalogue); break;
+                    case 4: MoviesWithDiscount(catalogue); break;
                     case 5: break;
-                    case 6: UkupanPrihodProdaje(catalogue); break;
+                    case 6: TotalIncome(catalogue); break;
                     case 0:
-                        Console.WriteLine("Kraj programa..."); return;
+                        Console.Clear();
+                        Console.WriteLine("Quitting..."); return;
                     default:
-                        Console.WriteLine("Nepoznata opcija."); break;
+                        Console.Clear();
+                        Console.WriteLine("Unknown option."); break;
                 }
             }
         }
 
-        private static void PrikaziSveIgre(MovieRelease[] catalogue)
+        private static void DisplayAllMovies(MovieRelease[] catalogue)
         {
             Console.Clear();
-            Console.WriteLine("\n===Nasa catalogue===");
+            Console.WriteLine("\n===Our catalogue===");
             for (int i = 0; i < catalogue.Length; i++)
             {
                 if (catalogue[i] != null)
@@ -225,10 +253,10 @@ namespace MovieStoreMaliukovIII3
         private static void SellCopy(MovieRelease[] catalogue)
         {
             Console.Clear();
-            Console.Write("Unesite index igre za prodaju: ");
+            Console.Write("Enter the movie index you want to sell: ");
             if (!int.TryParse(Console.ReadLine(), out int index))
             {
-                Console.WriteLine("Greska! Morate uneti broj");
+                Console.WriteLine("Error! You must enter a number!");
                 return;
             }
 
@@ -238,11 +266,11 @@ namespace MovieStoreMaliukovIII3
             }
             else
             {
-                Console.WriteLine("Nevazeci index za igru.");
+                Console.WriteLine("Not existing index.");
             }
         }
 
-        private static void NajskupljaMovieRelease(MovieRelease[] catalogue)
+        private static void MostExpensiveMovieRelease(MovieRelease[] catalogue)
         {
             Console.Clear();
             double maxPrice = -1;
@@ -250,27 +278,27 @@ namespace MovieStoreMaliukovIII3
 
             foreach (MovieRelease i in catalogue)
             {
-                if (i != null && i.GetCenu() > maxPrice)
+                if (i != null && i.GetPrice() > maxPrice)
                 {
-                    maxPrice = i.GetCenu();
+                    maxPrice = i.GetPrice();
                     najskuplja = i;
                 }
             }
             if (najskuplja != null)
             {
-                Console.WriteLine("===Najskuplja MovieRelease===");
+                Console.WriteLine("===The most expensive movie release===");
                 najskuplja.DisplayData();
             }
             else
             {
-                Console.WriteLine("Nema dostupnih igara u ponudi.");
+                Console.WriteLine("There are no movies in the catalogue.");
             }
         }
 
-        private static void IgreSaDiscountom(MovieRelease[] catalogue)
+        private static void MoviesWithDiscount(MovieRelease[] catalogue)
         {
             Console.Clear();
-            Console.WriteLine("===Igre sa popustom===");
+            Console.WriteLine("===Movies with a discount===");
             foreach (MovieRelease i in catalogue)
             {
                 if (i is DiscMovieRelease fiz && fiz.HasDiscount())
@@ -281,10 +309,10 @@ namespace MovieStoreMaliukovIII3
             }
         }
 
-        private static void UkupanPrihodProdaje(MovieRelease[] catalogue)
+        private static void TotalIncome(MovieRelease[] catalogue)
         {
             Console.Clear();
-            Console.WriteLine("===Ukupan prihod prodaje===");
+            Console.WriteLine("===Total income===");
             double ukupnaSuma = 0;
             foreach (MovieRelease i in catalogue)
             {
@@ -294,7 +322,7 @@ namespace MovieStoreMaliukovIII3
 
                 }
             }
-            Console.WriteLine("Ukupan prihod prodaje: " + ukupnaSuma + " dinara");
+            Console.WriteLine("Total income: " + ukupnaSuma + " dinars");
         }
     }
 
