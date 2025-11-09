@@ -441,7 +441,7 @@ namespace MovieStoreMaliukovIII3
             catalogue.Add(new DigitalMovieRelease("Inception", "Christopher Nolan", "Warner Bros.", 500, 2010, 8.8, "4K", true, true));
             catalogue.Add(new DiscMovieRelease("The Matrix", "The Wachowskis", "Warner Bros.", 300, 1999, 8.7, "Blu-ray", 10, 15));
             catalogue.Add(new AnalogMovieRelease("The Godfather", "Francis Ford Coppola", "Paramount Pictures", 400, 1972, 9.2, "VHS", 5, 10, true));
-            Console.WriteLine("Welcome to the Professor Audio!");
+            Console.WriteLine("Welcome to the Professor Movies!");
             MainMenu();
         }
 
