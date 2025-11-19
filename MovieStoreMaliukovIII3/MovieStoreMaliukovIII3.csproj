@@ -43,6 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\AnalogMovieRelease.cs" />
+    <Compile Include="Classes\DigitalMovieRelease.cs" />
+    <Compile Include="Classes\DiscMovieRelease.cs" />
+    <Compile Include="Classes\InputHelper.cs" />
+    <Compile Include="Classes\MovieRelease.cs" />
+    <Compile Include="Classes\PhysicalMovieRelease.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProfessorMoviesMaliukovIII3Projekat.cs" />
   </ItemGroup>

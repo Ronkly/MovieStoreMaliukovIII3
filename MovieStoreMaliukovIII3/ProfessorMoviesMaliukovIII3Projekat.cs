@@ -1,439 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MovieStoreMaliukovIII3.Classes;
 
 namespace MovieStoreMaliukovIII3
 {
-    internal abstract class MovieRelease
-    {
-        protected string Title { get; set; }
-        protected string Director { get; set; }
-        protected string Studio { get; set; }
-        protected double Price { get; set; }
-        protected int PurchasedCopies { get; set; }
-        protected double IMDbRating { get; set; }
-        protected int ReleaseYear { get; set; }
-
-        public MovieRelease(string title, string director, string studio, double price, int releaseYear, double imdbRating)
-        {
-            Title = title;
-            Director = director;
-            Studio = studio;
-            Price = price;
-            PurchasedCopies = 0;
-            ReleaseYear = releaseYear;
-            IMDbRating = imdbRating;
-        }
-
-        public string GetTitle()
-        {
-            return Title;
-        }
-        public void SetTitle(string title)
-        {
-            if (!string.IsNullOrEmpty(title))
-            {
-                Title = title;
-            }
-            else
-            {
-                Title = "Unknown title";
-                Console.WriteLine("Title cannot be empty!");
-            }
-        }
-        public string GetDirector()
-        {
-            return Director;
-        }
-        public void SetDirector(string director)
-        {
-            if (!string.IsNullOrEmpty(director))
-            {
-                Director = director;
-            }
-            else
-            {
-                Director = "Unknown director";
-                Console.WriteLine("Director cannot be empty!");
-            }
-        }
-        public string GetStudio()
-        {
-            return Studio;
-        }
-        public void SetStudio(string studio)
-        {
-            if (!string.IsNullOrEmpty(studio))
-            {
-                Studio = studio;
-            }
-            else
-            {
-                Studio = "Unknown studio";
-                Console.WriteLine("Studio cannot be empty!");
-            }
-        }
-        public double GetPrice()
-        {
-            return Price;
-        }
-
-        public void SetPrice(double price)
-        {
-            if (price > 0)
-            {
-                Price = price;
-            }
-            else
-            {
-                Price = 0;
-                Console.WriteLine("The movie is free!");
-            }
-        }
-
-        public double GetIMDbRating()
-        {
-            return IMDbRating;
-        }
-        public void SetIMDbRating(double rating)
-        {
-            if (rating >= 0 && rating <= 10)
-            {
-                IMDbRating = rating;
-            }
-            else
-            {
-                IMDbRating = 0;
-                Console.WriteLine("Invalid IMDb rating! It must be between 0 and 10.");
-            }
-        }
-        public int GetReleaseYear()
-        {
-            return ReleaseYear;
-        }
-        public void SetReleaseYear(int year)
-        {
-            if (year >= 1888 && year <= DateTime.Now.Year)
-            {
-                ReleaseYear = year;
-            }
-            else
-            {
-                ReleaseYear = DateTime.Now.Year;
-                Console.WriteLine("Invalid release year!");
-            }
-        }
-        public int GetPurchasedCopies()
-        {
-            return PurchasedCopies;
-        }
-        public void SetPurchasedCopies(int copies)
-        {
-            if (copies >= 0)
-            {
-                PurchasedCopies = copies;
-            }
-            else
-            {
-                PurchasedCopies = 0;
-                Console.WriteLine("There are no purchased copies.");
-            }
-        }
-        public virtual void DisplayData()
-        {
-            Console.WriteLine("Title: " + Title);
-            Console.WriteLine("Director: " + Director);
-            Console.WriteLine("Studio: " + Studio);
-            Console.WriteLine("Price: " + Price + " dinars");
-            Console.WriteLine("Number of purchased copies: " + PurchasedCopies + " copies");
-            Console.WriteLine("IMDb Rating: " + IMDbRating);
-            Console.WriteLine("Release year: " + ReleaseYear);
-            Console.WriteLine(new string('-', 5));
-        }
-
-        public virtual double GetIncome()
-        {
-            return Price * PurchasedCopies;
-        }
-
-        public virtual void SellCopy()
-        {
-            PurchasedCopies++;
-            Console.WriteLine("A copy of the movie release '" + Title + "' is sold.");
-        }
-    }
-    internal class DigitalMovieRelease : MovieRelease
-    {
-        private string VideoQuality { get; set; }
-        private bool DolbyAtmosSupport { get; set; }
-        private bool IsOnStreaming { get; set; }
-        public DigitalMovieRelease(string title, string director, string studio, double price, int releaseYear, double imdbRating, string VideoQuality, bool DolbyAtmosSupport, bool IsOnStreaming)
-            : base(title, director, studio, price, releaseYear, imdbRating)
-        {
-            this.VideoQuality = VideoQuality;
-            this.DolbyAtmosSupport = DolbyAtmosSupport;
-            this.IsOnStreaming = IsOnStreaming;
-        }
-
-        public string GetVideoQuality()
-        {
-            return VideoQuality;
-        }
-        public void SetVideoQuality(string videoQuality)
-        {
-            if (!string.IsNullOrEmpty(videoQuality))
-            {
-                VideoQuality = videoQuality;
-            }
-            else
-            {
-                VideoQuality = "Unknown quality";
-                Console.WriteLine("Video quality cannot be empty!");
-            }
-        }
-        public bool GetDolbyAtmosSupport()
-        {
-            return DolbyAtmosSupport;
-        }
-        public void SetDolbyAtmosSupport(bool support)
-        {
-            DolbyAtmosSupport = support;
-        }
-        public bool GetIsOnStreaming()
-        {
-            return IsOnStreaming;
-        }
-        public void SetIsOnStreaming(bool isOnStreaming)
-        {
-            IsOnStreaming = isOnStreaming;
-        }
-
-        public override void SellCopy()
-        {
-            base.SellCopy();
-            Console.WriteLine("The movie is available in your library now.");
-        }
-
-        public override void DisplayData()
-        {
-            base.DisplayData();
-            Console.WriteLine("VideoQuality: " + VideoQuality);
-            Console.WriteLine("Dolby Atmos Support: " + (DolbyAtmosSupport ? "Yes" : "No"));
-            Console.WriteLine("Is On Streaming: " + (IsOnStreaming ? "Yes" : "No"));
-        }
-        public bool Is4K()
-        {
-            return VideoQuality.ToUpper().Contains("4K");
-        }
-    }
-    internal class DiscMovieRelease : MovieRelease
-    {
-        private string DiskType { get; set; }
-        private int CopiesAvailable { get; set; }
-        private double Discount { get; set; }
-        public DiscMovieRelease(string title, string director, string studio, double price, int releaseYear, double imdbRating, string Format, int CopiesAvailable, double Discount)
-            : base(title, director, studio, price, releaseYear, imdbRating)
-        {
-            DiskType = Format;
-            this.CopiesAvailable = CopiesAvailable;
-            this.Discount = Discount;
-        }
-
-        public string GetFormat()
-        {
-            return DiskType;
-        }
-
-        public void SetFormat(string format)
-        {
-            if (!string.IsNullOrEmpty(format))
-            {
-                DiskType = format;
-            }
-            else
-            {
-                DiskType = "Unknown format";
-                Console.WriteLine("Format cannot be empty!");
-            }
-        }
-        public bool HasDiscount()
-        {
-            return Discount > 0;
-        }
-        public double GetDiscount()
-        {
-            return Discount;
-        }
-        public void SetDiscount(double discount)
-        {
-            if (discount >= 0 && discount <= 100)
-            {
-                Discount = discount;
-            }
-            else
-            {
-                Discount = 0;
-                Console.WriteLine("Invalid discount! It must be between 0 and 100.");
-            }
-        }
-        public double GetPriceWithDiscount()
-        {
-            return Price * (100.0 - Discount) / 100.0;
-        }
-        public void SetCopiesAvailable(int copies)
-        {
-            if (copies >= 0)
-            {
-                CopiesAvailable = copies;
-            }
-            else
-            {
-                CopiesAvailable = 0;
-                Console.WriteLine("No copies available!");
-            }
-        }
-        public override void SellCopy()
-        {
-            if (CopiesAvailable > 0)
-            {
-                base.SellCopy();
-                CopiesAvailable--;
-                Console.WriteLine("Availability: " + CopiesAvailable + " copies");
-
-                if (CopiesAvailable == 0)
-                {
-                    Console.WriteLine("MovieRelease: " + Title + " is sold out.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movie release: " + Title + " isn't available anymore.");
-            }
-        }
-        public override void DisplayData()
-        {
-            base.DisplayData();
-            Console.WriteLine("Copies available: " + CopiesAvailable + " copies");
-            Console.WriteLine("Discount: " + Discount + "%");
-            Console.WriteLine("Disk Type: " + DiskType);
-            Console.WriteLine("Price with Discount: " + GetPriceWithDiscount() + " dinars");
-        }
-        public override double GetIncome()
-        {
-            return Price * (100.0 - Discount) / 100.0 * PurchasedCopies;
-        }
-    }
-    internal class AnalogMovieRelease : MovieRelease
-    {
-        private string Format { get; set; }
-        private int CopiesAvailable { get; set; }
-        private double Discount { get; set; }
-        private bool GoodCondition { get; set; }
-
-        public AnalogMovieRelease(string title, string director, string studio, double price, int releaseYear, double imdbRating, string Format, int CopiesAvailable, double Discount, bool goodCondition)
-            : base(title, director, studio, price, releaseYear, imdbRating)
-        {
-            this.Format = Format;
-            this.CopiesAvailable = CopiesAvailable;
-            this.Discount = Discount;
-            GoodCondition = goodCondition;
-        }
-        public string GetFormat()
-        {
-            return Format;
-        }
-        public void SetFormat(string format)
-        {
-            if (!string.IsNullOrEmpty(format))
-            {
-                Format = format;
-            }
-            else
-            {
-                Format = "Unknown format";
-                Console.WriteLine("Format cannot be empty!");
-            }
-        }
-        public bool GetCondition()
-        {
-            return GoodCondition;
-        }
-        public void SetCondition(bool condition)
-        {
-            GoodCondition = condition;
-        }
-        public double GetDiscount()
-        {
-            return Discount;
-        }
-        public void SetDiscount(double discount)
-        {
-            if (discount >= 0 && discount <= 100)
-            {
-                Discount = discount;
-            }
-            else
-            {
-                Discount = 0;
-                Console.WriteLine("Invalid discount! It must be between 0 and 100.");
-            }
-        }
-        public bool HasDiscount()
-        {
-            return Discount > 0;
-        }
-        public double GetPriceWithDiscount()
-        {
-            return Price * (100.0 - Discount) / 100.0;
-        }
-        public override double GetIncome()
-        {
-            return Price * (100.0 - Discount) / 100.0 * PurchasedCopies;
-        }
-
-        public void SetCopiesAvailable(int copies)
-        {
-            if (copies >= 0)
-            {
-                CopiesAvailable = copies;
-            }
-            else
-            {
-                CopiesAvailable = 0;
-                Console.WriteLine("No copies available!");
-            }
-        }
-
-        public override void SellCopy()
-        {
-            if (CopiesAvailable > 0)
-            {
-                PurchasedCopies++;
-                CopiesAvailable--;
-                Console.WriteLine("Movie release: " + Title + " is sold.");
-                Console.WriteLine("Availability: " + CopiesAvailable + " copies");
-
-                if (CopiesAvailable == 0)
-                {
-                    Console.WriteLine("MovieRelease: " + Title + " is sold out.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movie release: " + Title + " isn't avaialable anymore.");
-            }
-        }
-        public override void DisplayData()
-        {
-            base.DisplayData();
-            Console.WriteLine("Format: " + Format);
-            Console.WriteLine("Copies available: " + CopiesAvailable + " copies");
-            Console.WriteLine("Discount: " + Discount + "%");
-            Console.WriteLine("Good Condition: " + (GoodCondition ? "Yes" : "No"));
-            Console.WriteLine("Price with Discount: " + GetPriceWithDiscount() + " dinars");
-        }
-    }
-
     internal class Program
     {
         private static readonly List<MovieRelease> catalogue = new List<MovieRelease>();
@@ -451,15 +22,15 @@ namespace MovieStoreMaliukovIII3
             while (true)
             {
                 Console.WriteLine("\nChoose your option:");
-                Console.WriteLine("1. Display the data of all movie releases" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
-                Console.WriteLine("2. The most expensive movie release" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
+                Console.WriteLine($"1. Display the data of all movie releases{(catalogue.Count == 0 ? " - [NOT AVAILABLE]" : "")} ");
+                Console.WriteLine($"2. The most expensive movie release{(catalogue.Count == 0 ? " - [NOT AVAILABLE]" : "")} ");
                 Console.WriteLine("3. Display movies with a discount" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
                 Console.WriteLine("4. Total income");
                 Console.WriteLine("5. Add new movie");
-                Console.WriteLine("6. Interact with a movie" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
-                Console.WriteLine("7. Delete a movie" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
-                Console.WriteLine("8. Sell a movie copy" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
-                Console.WriteLine("9. Show 4K Digital Movies" + (catalogue.Count == 0 ? " - [NOT AVAILABLE]" : ""));
+                Console.WriteLine($"6. Interact with a movie{(catalogue.Count == 0 ? " - [NOT AVAILABLE]" : "")} ");
+                Console.WriteLine($"7. Delete a movie{(catalogue.Count == 0 ? " - [NOT AVAILABLE]" : "")} ");
+                Console.WriteLine($"8. Sell a movie copy{(catalogue.Count == 0 ? " - [NOT AVAILABLE]" : "")} ");
+                Console.WriteLine($"9. Show 4K Digital Movies{(catalogue.Count == 0 ? " - [NOT AVAILABLE]" : "")} ");
 
                 Console.WriteLine("\n0. Quit");
 
@@ -490,54 +61,6 @@ namespace MovieStoreMaliukovIII3
             }
         }
 
-        private static string CheckString(string prompt)
-        {
-            string input;
-            Console.Write(prompt);
-            while (string.IsNullOrEmpty(input = Console.ReadLine()))
-            {
-                Console.Write("Input cannot be empty. Please try again: ");
-            }
-            return input;
-        }
-        private static int CheckInt(string prompt, int min, int max)
-        {
-            int value;
-            Console.Write(prompt);
-            while (!int.TryParse(Console.ReadLine(), out value) || value < min || value > max)
-            {
-                Console.Write("Invalid input. Please enter a valid number: ");
-            }
-            return value;
-        }
-        private static double CheckDouble(string prompt, double min, double max)
-        {
-            double value;
-            Console.Write(prompt);
-            while (!double.TryParse(Console.ReadLine(), out value) || value < min || value > max)
-            {
-                Console.Write("Invalid input. Please enter a valid number: ");
-            }
-            return value;
-        }
-        private static bool CheckIndex(int index)
-        {
-            if (index < 0 || index >= catalogue.Count)
-            {
-                Console.WriteLine("Invalid index.");
-                return false;
-            }
-            return true;
-        }
-        private static bool CheckCatalogueEmpty()
-        {
-            if (catalogue.Count == 0)
-            {
-                Console.WriteLine("The catalogue is empty.");
-                return true;
-            }
-            return false;
-        }
         #region Display Methods
         private static void DisplayAllMovies(List<MovieRelease> catalogue)
         {
@@ -567,9 +90,9 @@ namespace MovieStoreMaliukovIII3
 
                 foreach (MovieRelease i in catalogue)
                 {
-                    if (i != null && i.GetPrice() > maxPrice)
+                    if (i != null && i.Price > maxPrice)
                     {
-                        maxPrice = i.GetPrice();
+                        maxPrice = i.Price;
                         expensive = i;
                     }
                 }
@@ -597,24 +120,42 @@ namespace MovieStoreMaliukovIII3
             {
                 if (i is DiscMovieRelease disc && disc.HasDiscount())
                 {
-                    Console.WriteLine("Tite: " + disc.GetTitle());
-                    Console.WriteLine("Price: " + disc.GetPrice());
-                    Console.WriteLine("Discount: " + disc.GetDiscount());
-                    Console.WriteLine("Price with discount: " + disc.GetPriceWithDiscount());
+                    Console.WriteLine($"Title: {disc.Title}");
+                    Console.WriteLine($"Price: {disc.Price}");
+                    Console.WriteLine($"Discount: {disc.Discount}");
+                    Console.WriteLine($"Price with discount: {disc.GetPriceWithDiscount()}");
                     Console.WriteLine(new string('-', 25));
                 }
                 else if (i is AnalogMovieRelease analog && analog.HasDiscount())
                 {
-                    Console.WriteLine(analog.GetTitle());
-                    Console.WriteLine(analog.GetPrice());
-                    Console.WriteLine(analog.GetDiscount());
-                    Console.WriteLine(analog.GetPriceWithDiscount());
+                    Console.WriteLine($"Title: {analog.Title}");
+                    Console.WriteLine($"Price: {analog.Price}");
+                    Console.WriteLine($"Discount: {analog.Discount}");
+                    Console.WriteLine($"Price with discount: {analog.GetPriceWithDiscount()}");
                     Console.WriteLine(new string('-', 25));
                 }
             }
         }
         #endregion
 
+        internal static bool CheckIndex(int index)
+        {
+            if (index < 0 || index >= catalogue.Count)
+            {
+                Console.WriteLine("Invalid index.");
+                return false;
+            }
+            return true;
+        }
+        internal static bool CheckCatalogueEmpty()
+        {
+            if (catalogue.Count == 0)
+            {
+                Console.WriteLine("The catalogue is empty.");
+                return true;
+            }
+            return false;
+        }
 
         private static void AddMovieToCollection()
         {
@@ -632,55 +173,31 @@ namespace MovieStoreMaliukovIII3
                 Console.WriteLine("Invalid input! Enter 1, 2 or 3.");
                 Console.Write("\n> ");
             }
-            string title = CheckString("Enter title: ");
-            string director = CheckString("Enter director: ");
-            string studio = CheckString("Enter studio: ");
-            double price = CheckDouble("Enter price: ", 0, double.MaxValue);
-            int releaseYear = CheckInt("Enter release year: ", 1888, DateTime.Now.Year);
-            double imdbRating = CheckDouble("Enter new IMDb rating (0-10): ", 0, 10);
+            string title = InputHelper.CheckString("Enter title: ");
+            string director = InputHelper.CheckString("Enter director: ");
+            string studio = InputHelper.CheckString("Enter studio: ");
+            double price = InputHelper.CheckDouble("Enter price: ", 0, double.MaxValue);
+            int releaseYear = InputHelper.CheckInt("Enter release year: ", 1888, DateTime.Now.Year);
+            double imdbRating = InputHelper.CheckDouble("Enter new IMDb rating (0-10): ", 0, 10);
             switch (movieType)
             {
                 case 1:
-                    string videoQuality = CheckString("Enter video quality (e.g., 1080p, 4K): ");
-                    Console.Write("Does it support Dolby Atmos? (yes/no): ");
-                    bool dolbyAtmosSupport = Console.ReadLine().Trim().ToLower() == "yes";
-                    Console.Write("Is it on streaming? (yes/no): ");
-                    bool isOnStreaming = Console.ReadLine().Trim().ToLower() == "yes";
+                    string videoQuality = InputHelper.CheckString("Enter video quality (e.g., 1080p, 4K): ");
+                    bool dolbyAtmosSupport = InputHelper.CheckBool("Does it support Dolby Atmos? (yes/no): ");
+                    bool isOnStreaming = InputHelper.CheckBool("Is it on streaming? (yes/no): ");
                     catalogue.Add(new DigitalMovieRelease(title, director, studio, price, releaseYear, imdbRating, videoQuality, dolbyAtmosSupport, isOnStreaming));
                     break;
                 case 2:
-                    string discType = CheckString("Enter format (DVD, Blu-ray, CD, LaserDisk...): ");
-                    int copiesAvailableDisc;
-                    Console.Write("Enter number of copies available: ");
-                    while (!int.TryParse(Console.ReadLine(), out copiesAvailableDisc) || copiesAvailableDisc < 0)
-                    {
-                        Console.Write("Invalid input. Please enter a valid number of copies: ");
-                    }
-                    double discountDisc;
-                    Console.Write("Enter discount percentage: ");
-                    while (!double.TryParse(Console.ReadLine(), out discountDisc) || discountDisc < 0 || discountDisc > 100)
-                    {
-                        Console.Write("Invalid input. Please enter a valid discount percentage (0-100): ");
-                    }
+                    string discType = InputHelper.CheckString("Enter format (DVD, Blu-ray, CD, LaserDisk): ");
+                    int copiesAvailableDisc = InputHelper.CheckInt("Enter number of copies available: ", 0, int.MaxValue);
+                    double discountDisc = InputHelper.CheckDouble("Enter discount percentage: ", 0, 100);
                     catalogue.Add(new DiscMovieRelease(title, director, studio, price, releaseYear, imdbRating, discType, copiesAvailableDisc, discountDisc));
                     break;
                 case 3:
-                    string formatAnalog = CheckString("Enter format (e.g., VHS, Blu-ray): ");
-                    int copiesAvailableAnalog;
-                    Console.Write("Enter number of copies available: ");
-                    while (!int.TryParse(Console.ReadLine(), out copiesAvailableAnalog) || copiesAvailableAnalog < 0)
-                    {
-                        Console.Write("Invalid input. Please enter a valid number of copies: ");
-                    }
-                    double discountAnalog;
-                    Console.Write("Enter discount percentage: ");
-                    while (!double.TryParse(Console.ReadLine(), out discountAnalog) || discountAnalog < 0 || discountAnalog > 100)
-                    {
-                        Console.Write("Invalid input. Please enter a valid discount percentage (0-100): ");
-                    }
-                    bool goodCondition;
-                    Console.Write("Is the analog movie in good condition? (yes/no): ");
-                    goodCondition = Console.ReadLine().Trim().ToLower() == "yes";
+                    string formatAnalog = InputHelper.CheckString("Enter format (e.g., VHS, ): ");
+                    int copiesAvailableAnalog = InputHelper.CheckInt("Enter number of copies available: ", 0, int.MaxValue);
+                    double discountAnalog = InputHelper.CheckDouble("Enter discount percentage: ", 0, 100);
+                    bool goodCondition = InputHelper.CheckBool("Is the analog movie in good condition? (yes/no): ");
                     catalogue.Add(new AnalogMovieRelease(title, director, studio, price, releaseYear, imdbRating, formatAnalog, copiesAvailableAnalog, discountAnalog, goodCondition));
                     break;
             }
@@ -701,7 +218,7 @@ namespace MovieStoreMaliukovIII3
             {
                 if (i is DigitalMovieRelease digital && digital.Is4K())
                 {
-                    Console.WriteLine("- " + digital.GetTitle());
+                    Console.WriteLine($"- {digital.Title}");
                     found = true;
                 }
             }
@@ -744,17 +261,17 @@ namespace MovieStoreMaliukovIII3
                 string movieType;
                 if (catalogue[index] is DiscMovieRelease)
                 {
-                    Console.WriteLine("\nInteracting with disc movie release: " + catalogue[index].GetTitle());
+                    Console.WriteLine($"\nInteracting with disc movie release: " + catalogue[index].Title);
                     movieType = "disc";
                 }
                 else if (catalogue[index] is AnalogMovieRelease)
                 {
-                    Console.WriteLine("\nInteracting with analog movie release: " + catalogue[index].GetTitle());
+                    Console.WriteLine($"\nInteracting with analog movie release: " + catalogue[index].Title);
                     movieType = "analog";
                 }
                 else
                 {
-                    Console.WriteLine("\nInteracting with digital movie release: " + catalogue[index].GetTitle());
+                    Console.WriteLine($"\nInteracting with digital movie release: " + catalogue[index].Title);
                     movieType = "digital";
                 }
                 Console.WriteLine("Choose an option:");
@@ -803,52 +320,51 @@ namespace MovieStoreMaliukovIII3
                         break;
                     case 2:
                         Console.Clear();
-                        string newTitle = CheckString("Enter new title: ");
-                        catalogue[index].SetTitle(newTitle);
+                        string newTitle = InputHelper.CheckString("Enter new title: ");
+                        catalogue[index].Title = newTitle;
                         break;
                     case 3:
                         Console.Clear();
-                        string newDirector = CheckString("Enter new director: ");
-                        catalogue[index].SetDirector(newDirector);
+                        string newDirector = InputHelper.CheckString("Enter new director: ");
+                        catalogue[index].Director = newDirector;
                         break;
                     case 4:
                         Console.Clear();
-                        string newStudio = CheckString("Enter new studio: ");
-                        catalogue[index].SetStudio(newStudio);
+                        string newStudio = InputHelper.CheckString("Enter new studio: ");
+                        catalogue[index].Studio = newStudio;
                         break;
                     case 5:
                         Console.Clear();
-                        double newPrice = CheckDouble("Enter new price: ", 0, double.MaxValue);
-                        catalogue[index].SetPrice(newPrice);
+                        double newPrice = InputHelper.CheckDouble("Enter new price: ", 0, double.MaxValue);
+                        catalogue[index].Price = newPrice;
                         break;
                     case 6:
                         Console.Clear();
-                        double newRating = CheckDouble("Enter new IMDb rating (0-10): ", 0, 10);
-                        catalogue[index].SetIMDbRating(newRating);
+                        double newRating = InputHelper.CheckDouble("Enter new IMDb rating (0-10): ", 0, 10);
+                        catalogue[index].IMDbRating = newRating;
                         break;
                     case 7:
                         Console.Clear();
-                        int newReleaseYear = CheckInt("Enter new release year: ", 1888, DateTime.Now.Year);
-                        catalogue[index].SetReleaseYear(newReleaseYear);
+                        int newReleaseYear = InputHelper.CheckInt("Enter new release year: ", 1888, DateTime.Now.Year);
+                        catalogue[index].ReleaseYear = newReleaseYear;
                         break;
                     case 8:
                         Console.Clear();
-                        int newPurchases = CheckInt("Enter new number of purchases: ", 0, int.MaxValue);
-                        catalogue[index].SetPurchasedCopies(newPurchases);
+                        int newPurchases = InputHelper.CheckInt("Enter new number of purchases: ", 0, int.MaxValue);
+                        catalogue[index].PurchasedCopies = newPurchases;
                         break;
                     case 9:
                         Console.Clear();
                         switch (movieType)
                         {
                             case "digital":
-                                string newVideoQuality = CheckString("Enter new video quality: ");
-                                ((DigitalMovieRelease)catalogue[index]).SetVideoQuality(newVideoQuality);
+                                ((DigitalMovieRelease)catalogue[index]).VideoQuality = InputHelper.CheckString("Enter new video quality: ");
                                 break;
                             case "disc":
-                                SetAvailableCopiesToMovie(index);
+                                ((PhysicalMovieRelease)catalogue[index]).CopiesAvailable = InputHelper.CheckInt("Enter the new number of available copies: ", 0, int.MaxValue);
                                 break;
                             case "analog":
-                                SetAvailableCopiesToMovie(index);
+                                ((PhysicalMovieRelease)catalogue[index]).CopiesAvailable = InputHelper.CheckInt("Enter the new number of available copies: ", 0, int.MaxValue);
                                 break;
                         }
                         break;
@@ -857,15 +373,13 @@ namespace MovieStoreMaliukovIII3
                         switch (movieType)
                         {
                             case "digital":
-                                Console.Write("Does it support Dolby Atmos? (yes/no): ");
-                                bool newDolbyAtmosSupport = Console.ReadLine().Trim().ToLower() == "yes";
-                                ((DigitalMovieRelease)catalogue[index]).SetDolbyAtmosSupport(newDolbyAtmosSupport);
+                                ((DigitalMovieRelease)catalogue[index]).DolbyAtmosSupport = InputHelper.CheckBool("Does it support Dolby Atmos? (yes/no): ");
                                 break;
                             case "disc":
-                                SetDiscountPercentage(index);
+                                ((PhysicalMovieRelease)catalogue[index]).Discount = InputHelper.CheckDouble("Enter new discount percentage: ", 0, 100);
                                 break;
                             case "analog":
-                                SetDiscountPercentage(index);
+                                ((PhysicalMovieRelease)catalogue[index]).Discount = InputHelper.CheckDouble("Enter new discount percentage: ", 0, 100);
                                 break;
                         }
                         break;
@@ -874,17 +388,13 @@ namespace MovieStoreMaliukovIII3
                         switch (movieType)
                         {
                             case "digital":
-                                Console.Write("Is it on streaming? (yes/no): ");
-                                bool newIsOnStreaming = Console.ReadLine().Trim().ToLower() == "yes";
-                                ((DigitalMovieRelease)catalogue[index]).SetIsOnStreaming(newIsOnStreaming);
+                                ((DigitalMovieRelease)catalogue[index]).IsOnStreaming = InputHelper.CheckBool("Is it on streaming? (yes/no): ");
                                 break;
                             case "disc":
-                                string newDiskType = CheckString("Enter new disk type: ");
-                                ((DiscMovieRelease)catalogue[index]).SetFormat(newDiskType);
+                                ((DiscMovieRelease)catalogue[index]).Format = InputHelper.CheckString("Enter new disk type: ");
                                 break;
                             case "analog":
-                                string newFormat = CheckString("Enter new format: ");
-                                ((AnalogMovieRelease)catalogue[index]).SetFormat(newFormat);
+                                ((AnalogMovieRelease)catalogue[index]).Format = InputHelper.CheckString("Enter new format: ");
                                 break;
                         }
                         break;
@@ -894,14 +404,12 @@ namespace MovieStoreMaliukovIII3
                         {
                             case "disc":
                                 bool hasDiscount = ((DiscMovieRelease)catalogue[index]).HasDiscount();
-                                Console.WriteLine("The disc movie release " + catalogue[index].GetTitle() + (hasDiscount ? " has a discount." : " does not have a discount."));
+                                Console.WriteLine($"The disc movie release " + catalogue[index].Title + (hasDiscount ? " has a discount." : " does not have a discount."));
                                 Console.WriteLine("\nPress any key");
                                 _ = Console.ReadKey();
                                 break;
                             case "analog":
-                                Console.Write("Is the analog movie in good condition? (yes/no): ");
-                                bool newCondition = Console.ReadLine().Trim().ToLower() == "yes";
-                                ((AnalogMovieRelease)catalogue[index]).SetCondition(newCondition);
+                                ((AnalogMovieRelease)catalogue[index]).GoodCondition = InputHelper.CheckBool("Is the analog movie in good condition? (yes/no): ");
                                 break;
                             case "digital":
                                 Console.WriteLine("Option not implemented yet.");
@@ -918,42 +426,6 @@ namespace MovieStoreMaliukovIII3
                         Console.WriteLine("Option not implemented yet.");
                         break;
                 }
-            }
-        }
-
-        private static void SetAvailableCopiesToMovie(int index)
-        {
-            Console.Clear();
-            int newCopies = CheckInt("Enter the new number of available copies: ", 0, int.MaxValue);
-
-            if (catalogue[index] is DiscMovieRelease discMovie)
-            {
-                discMovie.SetCopiesAvailable(newCopies);
-            }
-            else if (catalogue[index] is AnalogMovieRelease analogMovie)
-            {
-                analogMovie.SetCopiesAvailable(newCopies);
-            }
-            else
-            {
-                Console.WriteLine("The selected movie is not a disc movie release.");
-            }
-        }
-        private static void SetDiscountPercentage(int index)
-        {
-            double newDiscount;
-            Console.Write("Enter new discount percentage: ");
-            while (!double.TryParse(Console.ReadLine(), out newDiscount) || newDiscount < 0 || newDiscount > 100)
-            {
-                Console.Write("Invalid input. Please enter a valid discount percentage (0-100): ");
-            }
-            if (catalogue[index] is DiscMovieRelease)
-            {
-                ((DiscMovieRelease)catalogue[index]).SetDiscount(newDiscount);
-            }
-            else if (catalogue[index] is AnalogMovieRelease)
-            {
-                ((AnalogMovieRelease)catalogue[index]).SetDiscount(newDiscount);
             }
         }
         private static void DeleteMovieFromCollection()
@@ -984,7 +456,7 @@ namespace MovieStoreMaliukovIII3
                 return;
             }
 
-            Console.WriteLine(catalogue[index].GetTitle() + " has been deleted.");
+            Console.WriteLine(catalogue[index].Title + " has been deleted.");
             catalogue.RemoveAt(index);
         }
 
@@ -1031,7 +503,7 @@ namespace MovieStoreMaliukovIII3
             {
                 if (catalogue[i] != null)
                 {
-                    Console.WriteLine((i + 1).ToString() + ". " + catalogue[i].GetTitle());
+                    Console.WriteLine((i + 1).ToString() + ". " + catalogue[i].Title + " - " + (catalogue[i] is PhysicalMovieRelease phys ? phys.Format : "Digital"));
                 }
             }
         }
